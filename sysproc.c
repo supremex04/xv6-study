@@ -7,26 +7,36 @@
 #include "mmu.h"
 #include "proc.h"
 
-int
+// Implement the sys_gettime system call
+uint
+sys_gettime(void)
+{
+  struct rtcdate r;
+  cmostime(&r);
+  return (r.year << 16) | (r.month << 12) | (r.day << 8) | (r.hour << 4) | r.minute;
+}
+
+// Implement other system calls with uint return type
+uint
 sys_fork(void)
 {
   return fork();
 }
 
-int
+uint
 sys_exit(void)
 {
   exit();
   return 0;  // not reached
 }
 
-int
+uint
 sys_wait(void)
 {
   return wait();
 }
 
-int
+uint
 sys_kill(void)
 {
   int pid;
@@ -36,13 +46,13 @@ sys_kill(void)
   return kill(pid);
 }
 
-int
+uint
 sys_getpid(void)
 {
   return myproc()->pid;
 }
 
-int
+uint
 sys_sbrk(void)
 {
   int addr;
@@ -56,7 +66,7 @@ sys_sbrk(void)
   return addr;
 }
 
-int
+uint
 sys_sleep(void)
 {
   int n;
@@ -77,9 +87,7 @@ sys_sleep(void)
   return 0;
 }
 
-// return how many clock tick interrupts have occurred
-// since start.
-int
+uint
 sys_uptime(void)
 {
   uint xticks;
